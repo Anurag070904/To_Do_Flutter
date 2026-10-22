@@ -53,6 +53,7 @@ class _TaskFormState extends State<TaskForm> {
           autofocus: true,
           textCapitalization: TextCapitalization.sentences,
           decoration: const InputDecoration(
+            prefixIcon: Icon(Icons.edit_note_rounded),
             labelText: 'Task title',
             hintText: 'What needs to get done?',
           ),
@@ -69,6 +70,7 @@ class _TaskFormState extends State<TaskForm> {
           maxLines: 6,
           textCapitalization: TextCapitalization.sentences,
           decoration: const InputDecoration(
+            prefixIcon: Padding(padding: EdgeInsets.only(bottom: 48), child: Icon(Icons.notes_rounded)),
             labelText: 'Description (optional)',
             hintText: 'Add a few details',
           ),
@@ -83,7 +85,7 @@ class _TaskFormState extends State<TaskForm> {
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                   : const Icon(Icons.check),
-          label: Text(_saving ? 'Saving…' : widget.submitLabel),
+          label: Text(_saving ? 'Saving...' : widget.submitLabel),
           style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
         ),
       ],

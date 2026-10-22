@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 class AppTheme {
   static const ink = Color(0xFF18243A);
   static const accent = Color(0xFF536DFE);
+  static const canvas = Color(0xFFF4F6FC);
+  static const muted = Color(0xFF78839A);
 
   static ThemeData get light {
     final scheme = ColorScheme.fromSeed(
@@ -12,16 +14,28 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
-      scaffoldBackgroundColor: const Color(0xFFF6F7FB),
+      scaffoldBackgroundColor: canvas,
       appBarTheme: const AppBarTheme(
-        backgroundColor: Color(0xFFF6F7FB),
+        backgroundColor: canvas,
         foregroundColor: ink,
         elevation: 0,
       ),
       cardTheme: CardThemeData(
         color: Colors.white,
         elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(22),
+          side: const BorderSide(color: Color(0xFFE9ECF4)),
+        ),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: accent,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          textStyle: const TextStyle(fontWeight: FontWeight.w700),
+        ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,

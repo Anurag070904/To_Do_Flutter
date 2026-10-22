@@ -12,8 +12,13 @@ class AddTaskScreen extends StatelessWidget {
     appBar: AppBar(title: const Text('New task')),
     body: SafeArea(
       child: ListView(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.fromLTRB(20, 10, 20, 28),
         children: [
+          Container(padding: const EdgeInsets.all(22), decoration: BoxDecoration(gradient: const LinearGradient(colors: [Color(0xFF283B68), Color(0xFF536DFE)], begin: Alignment.topLeft, end: Alignment.bottomRight), borderRadius: BorderRadius.circular(26)), child: const Row(children: [
+            CircleAvatar(radius: 25, backgroundColor: Color(0x33FFFFFF), child: Icon(Icons.auto_awesome_rounded, color: Colors.white)),
+            SizedBox(width: 15), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('A fresh start', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w600)), SizedBox(height: 4), Text('One step at a time.', style: TextStyle(color: Colors.white, fontSize: 21, fontWeight: FontWeight.w800))])),
+          ])),
+          const SizedBox(height: 24),
           const Text(
             'Make it happen.',
             style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
@@ -24,7 +29,7 @@ class AddTaskScreen extends StatelessWidget {
             style: TextStyle(color: Colors.black54),
           ),
           const SizedBox(height: 28),
-          TaskForm(
+          Card(child: Padding(padding: const EdgeInsets.all(20), child: TaskForm(
             onSubmit: (title, description) async {
               final now = DateTime.now();
               try {
@@ -49,7 +54,7 @@ class AddTaskScreen extends StatelessWidget {
                 }
               }
             },
-          ),
+          ))),
         ],
       ),
     ),
