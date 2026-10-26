@@ -138,20 +138,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 58,
         titleSpacing: 22,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: [Color(0xFF283B68), Color(0xFF536DFE)],
+            ),
+          ),
+        ),
         title: Row(
           children: [
             Container(
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: AppTheme.accent.withValues(alpha: 0.11),
+                color: Colors.white.withValues(alpha: 0.16),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
                 Icons.check_rounded,
-                color: AppTheme.accent,
+                color: Colors.white,
                 size: 22,
               ),
             ),
@@ -169,6 +177,10 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             onPressed: _loadTasks,
             tooltip: 'Refresh tasks',
+            style: IconButton.styleFrom(
+              backgroundColor: Colors.white.withValues(alpha: 0.14),
+              foregroundColor: Colors.white,
+            ),
             icon: const Icon(Icons.refresh_rounded),
           ),
           const SizedBox(width: 8),

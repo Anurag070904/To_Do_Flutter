@@ -16,9 +16,18 @@ class AppTheme {
       colorScheme: scheme,
       scaffoldBackgroundColor: canvas,
       appBarTheme: const AppBarTheme(
-        backgroundColor: canvas,
-        foregroundColor: ink,
+        backgroundColor: ink,
+        foregroundColor: Colors.white,
         elevation: 0,
+        scrolledUnderElevation: 0,
+        toolbarHeight: 64,
+        titleTextStyle: TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.w800,
+          letterSpacing: -0.4,
+        ),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       cardTheme: CardThemeData(
         color: Colors.white,
@@ -33,7 +42,9 @@ class AppTheme {
         style: FilledButton.styleFrom(
           backgroundColor: accent,
           foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           textStyle: const TextStyle(fontWeight: FontWeight.w700),
         ),
       ),
