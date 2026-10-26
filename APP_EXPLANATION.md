@@ -6,6 +6,7 @@ This project is a small Flutter-based to-do application for managing daily tasks
 - Add a new task with a title and optional description
 - View all tasks in a clean list
 - Mark tasks as completed or pending
+- Schedule tasks for a specific day and review them in a daily checklist
 - Edit an existing task
 - Delete a task
 - Filter tasks by All, Pending, or Completed
@@ -21,6 +22,9 @@ The app is built with Flutter and uses Material 3 styling. The main screen shows
 - counts for pending and completed tasks
 - a donut graph showing completed and pending task counts
 - filter buttons for task categories
+
+The calendar button opens a daily checklist where users can choose a date,
+review that day's tasks, and add tasks directly to that date.
 
 Below that, tasks appear as cards. Each task card contains:
 
@@ -71,6 +75,11 @@ It allows the user to change:
 
 Then it updates the record in the database.
 
+### lib/screens/daily_tasks_screen.dart
+This page provides a date picker and a checklist for the selected day. It shows
+the day's completion progress and supports adding, editing, completing, and
+deleting tasks assigned to that date.
+
 ### lib/models/task_model.dart
 This file defines the `Task` model.
 
@@ -79,6 +88,7 @@ The model includes:
 - `title`
 - `description`
 - `isCompleted`
+- `taskDate` (the date the task appears in the daily checklist)
 - `createdAt`
 - `updatedAt`
 
@@ -97,7 +107,10 @@ It:
 - reads all tasks
 - fetches one task by ID
 - updates title, description, and completion status
+- retrieves tasks scheduled for a selected date
 - deletes tasks
+
+On upgrade, existing tasks are assigned to the date they were created.
 
 The table schema is:
 
@@ -105,6 +118,7 @@ The table schema is:
 - `title` TEXT NOT NULL
 - `description` TEXT
 - `isCompleted` INTEGER NOT NULL DEFAULT 0
+- `taskDate` TEXT NOT NULL
 - `createdAt` TEXT NOT NULL
 - `updatedAt` TEXT NOT NULL
 

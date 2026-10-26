@@ -8,6 +8,7 @@ import '../widgets/task_status_chart.dart';
 import '../utils/app_theme.dart';
 import 'add_task_screen.dart';
 import 'edit_task_screen.dart';
+import 'daily_tasks_screen.dart';
 
 enum _TaskFilter { all, pending, completed }
 
@@ -174,6 +175,16 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         actions: [
+          IconButton(
+            onPressed: () => _open(const DailyTasksScreen()),
+            tooltip: 'Daily tasks',
+            style: IconButton.styleFrom(
+              backgroundColor: Colors.white.withValues(alpha: 0.14),
+              foregroundColor: Colors.white,
+            ),
+            icon: const Icon(Icons.calendar_month_rounded),
+          ),
+          const SizedBox(width: 8),
           IconButton(
             onPressed: _loadTasks,
             tooltip: 'Refresh tasks',

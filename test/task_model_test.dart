@@ -32,4 +32,17 @@ void main() {
     expect(task.toMap().containsKey('id'), isFalse);
     expect(task.toMap()['isCompleted'], 0);
   });
+
+  test('round trips the task date independently of creation time', () {
+    final task = Task(
+      title: 'Plan tomorrow',
+      taskDate: DateTime(2026, 1, 5),
+      createdAt: DateTime(2026, 1, 4, 23, 30),
+      updatedAt: DateTime(2026, 1, 4, 23, 30),
+    );
+
+    final restored = Task.fromMap(task.toMap());
+
+    expect(restored.taskDate, DateTime(2026, 1, 5));
+  });
 }

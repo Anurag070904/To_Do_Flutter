@@ -15,7 +15,7 @@ class DatabaseHelper {
 
   static final DatabaseHelper instance = DatabaseHelper._();
   static const _databaseName = 'to_do.db';
-  static const _databaseVersion = 1;
+  static const _databaseVersion = 2;
   final DatabaseFactory _factory;
   final String? _databasePath;
   Database? _database;
@@ -33,11 +33,21 @@ class DatabaseHelper {
         title TEXT NOT NULL,
         description TEXT,
         isCompleted INTEGER NOT NULL DEFAULT 0,
+        taskDate TEXT NOT NULL,
         createdAt TEXT NOT NULL,
         updatedAt TEXT NOT NULL
       )''');
         },
-        onUpgrade: (db, oldVersion, newVersion) async {},
+        onUpgrade: (db, oldVersion, newVersion) async {
+          if (oldVersion < 2) {
+            await db.execute(
+              "ALTER TABLE tasks ADD COLUMN taskDate TEXT NOT NULL DEFAULT ''",
+            );
+            await db.execute(
+              "UPDATE tasks SET taskDate = substr(createdAt, 1, 10)",
+            );
+          }
+        },
       ),
     );
     return _database!;
@@ -54,6 +64,20 @@ class DatabaseHelper {
   Future<List<Task>> getAllTasks() async {
     final rows = await (await database).query(
       'tasks',
+      orderBy: 'createdAt DESC, id DESC',
+    );
+    return rows.map(Task.fromMap).toList();
+  }
+
+  Future<List<Task>> getTasksForDate(DateTime date) async {
+    final day =
+        '${date.year.toString().padLeft(4, '0')}-'
+        '${date.month.toString().padLeft(2, '0')}-'
+        '${date.day.toString().padLeft(2, '0')}';
+    final rows = await (await database).query(
+      'tasks',
+      where: 'taskDate = ?',
+      whereArgs: [day],
       orderBy: 'createdAt DESC, id DESC',
     );
     return rows.map(Task.fromMap).toList();
