@@ -19,6 +19,7 @@ The app is built with Flutter and uses Material 3 styling. The main screen shows
 - the current date
 - a tagline
 - counts for pending and completed tasks
+- a donut graph showing completed and pending task counts
 - filter buttons for task categories
 
 Below that, tasks appear as cards. Each task card contains:

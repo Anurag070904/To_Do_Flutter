@@ -1,10 +1,10 @@
-
 import 'package:flutter/material.dart';
 
 import '../database/database_helper.dart';
 import '../models/task_model.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/task_card.dart';
+import '../widgets/task_status_chart.dart';
 import '../utils/app_theme.dart';
 import 'add_task_screen.dart';
 import 'edit_task_screen.dart';
@@ -51,15 +51,16 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  List<Task> get _visibleTasks => _tasks
-      .where(
-        (task) => switch (_filter) {
-          _TaskFilter.all => true,
-          _TaskFilter.pending => !task.isCompleted,
-          _TaskFilter.completed => task.isCompleted,
-        },
-      )
-      .toList();
+  List<Task> get _visibleTasks =>
+      _tasks
+          .where(
+            (task) => switch (_filter) {
+              _TaskFilter.all => true,
+              _TaskFilter.pending => !task.isCompleted,
+              _TaskFilter.completed => task.isCompleted,
+            },
+          )
+          .toList();
 
   Future<void> _open(Widget page) async {
     final changed = await Navigator.push<bool>(
@@ -74,18 +75,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _toggle(Task task, bool value) async {
     try {
-      await DatabaseHelper.instance.updateTaskCompletion(
-        task.id!,
-        value,
-      );
+      await DatabaseHelper.instance.updateTaskCompletion(task.id!, value);
       await _loadTasks();
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text(
-              'Could not update completion. Please try again.',
-            ),
+            content: Text('Could not update completion. Please try again.'),
           ),
         );
       }
@@ -95,22 +91,21 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _delete(Task task) async {
     final confirm = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete this task?'),
-        content: Text(
-          '"${task.title}" will be permanently removed.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Delete this task?'),
+            content: Text('"${task.title}" will be permanently removed.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Delete'),
+              ),
+            ],
           ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
     );
 
     if (confirm != true || !mounted) return;
@@ -120,17 +115,15 @@ class _HomeScreenState extends State<HomeScreen> {
       await _loadTasks();
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Task deleted.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Task deleted.')));
       }
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text(
-              'Could not delete the task. Please try again.',
-            ),
+            content: Text('Could not delete the task. Please try again.'),
           ),
         );
       }
@@ -139,11 +132,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final completed =
-        _tasks.where((task) => task.isCompleted).length;
+    final completed = _tasks.where((task) => task.isCompleted).length;
     final pending = _tasks.length - completed;
-    final progress =
-        _tasks.isEmpty ? 0.0 : completed / _tasks.length;
+    final progress = _tasks.isEmpty ? 0.0 : completed / _tasks.length;
 
     return Scaffold(
       appBar: AppBar(
@@ -270,15 +261,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                   tween: Tween<double>(begin: 0, end: progress),
                                   duration: const Duration(milliseconds: 850),
                                   curve: Curves.easeOutCubic,
-                                  builder: (context, value, _) => ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: LinearProgressIndicator(
-                                      value: value,
-                                      minHeight: 7,
-                                      backgroundColor: Colors.white24,
-                                      color: const Color(0xFFB8F1D2),
-                                    ),
-                                  ),
+                                  builder:
+                                      (context, value, _) => ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: LinearProgressIndicator(
+                                          value: value,
+                                          minHeight: 7,
+                                          backgroundColor: Colors.white24,
+                                          color: const Color(0xFFB8F1D2),
+                                        ),
+                                      ),
                                 ),
                               ],
                             ),
@@ -286,10 +278,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           const SizedBox(width: 16),
                           AnimatedSwitcher(
                             duration: const Duration(milliseconds: 250),
-                            transitionBuilder: (child, animation) => FadeTransition(
-                              opacity: animation,
-                              child: ScaleTransition(scale: animation, child: child),
-                            ),
+                            transitionBuilder:
+                                (child, animation) => FadeTransition(
+                                  opacity: animation,
+                                  child: ScaleTransition(
+                                    scale: animation,
+                                    child: child,
+                                  ),
+                                ),
                             child: Text(
                               '${(progress * 100).round()}%',
                               key: ValueKey<int>((progress * 100).round()),
@@ -326,8 +322,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         });
                       },
                       style: SegmentedButton.styleFrom(
-                        backgroundColor:
-                            Colors.white.withValues(alpha: 0.10),
+                        backgroundColor: Colors.white.withValues(alpha: 0.10),
                         foregroundColor: Colors.white70,
                         selectedBackgroundColor: Colors.white,
                         selectedForegroundColor: AppTheme.ink,
@@ -338,74 +333,79 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             Expanded(
-              child: _loading
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : _error != null
+              child:
+                  _loading
+                      ? const Center(child: CircularProgressIndicator())
+                      : _error != null
                       ? Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(24),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  _error!,
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 12),
-                                FilledButton(
-                                  onPressed: _loadTasks,
-                                  child: const Text('Try again'),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      : _visibleTasks.isEmpty
-                          ? EmptyState(
-                              onAdd: () =>
-                                  _open(const AddTaskScreen()),
-                            )
-                          : RefreshIndicator(
-                              onRefresh: _loadTasks,
-                              child: ListView.builder(
-                                padding: const EdgeInsets.fromLTRB(
-                                  16,
-                                  4,
-                                  16,
-                                  96,
-                                ),
-                                itemCount: _visibleTasks.length,
-                                itemBuilder: (context, index) {
-                                  final task = _visibleTasks[index];
-
-                                  return TweenAnimationBuilder<double>(
-                                    key: ValueKey<int>(task.id!),
-                                    tween: Tween<double>(begin: 0, end: 1),
-                                    duration: Duration(
-                                      milliseconds: 350 + (index * 60).clamp(0, 300).toInt(),
-                                    ),
-                                    curve: Curves.easeOutCubic,
-                                    builder: (context, value, child) => Opacity(
-                                      opacity: value,
-                                      child: Transform.translate(
-                                        offset: Offset(0, 14 * (1 - value)),
-                                        child: child,
-                                      ),
-                                    ),
-                                    child: TaskCard(
-                                      task: task,
-                                      onToggle: (value) => _toggle(task, value),
-                                      onEdit: () => _open(
-                                        EditTaskScreen(taskId: task.id!),
-                                      ),
-                                      onDelete: () => _delete(task),
-                                    ),
-                                  );
-                                },
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(_error!, textAlign: TextAlign.center),
+                              const SizedBox(height: 12),
+                              FilledButton(
+                                onPressed: _loadTasks,
+                                child: const Text('Try again'),
                               ),
-                            ),
+                            ],
+                          ),
+                        ),
+                      )
+                      : RefreshIndicator(
+                        onRefresh: _loadTasks,
+                        child: ListView.builder(
+                          padding: const EdgeInsets.fromLTRB(16, 4, 16, 96),
+                          itemCount: _visibleTasks.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index == 0) {
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: TaskStatusChart(
+                                  completed: completed,
+                                  pending: pending,
+                                ),
+                              );
+                            }
+
+                            if (_visibleTasks.isEmpty) {
+                              return EmptyState(
+                                onAdd: () => _open(const AddTaskScreen()),
+                              );
+                            }
+
+                            final task = _visibleTasks[index - 1];
+
+                            return TweenAnimationBuilder<double>(
+                              key: ValueKey<int>(task.id!),
+                              tween: Tween<double>(begin: 0, end: 1),
+                              duration: Duration(
+                                milliseconds:
+                                    350 +
+                                    ((index - 1) * 60).clamp(0, 300).toInt(),
+                              ),
+                              curve: Curves.easeOutCubic,
+                              builder:
+                                  (context, value, child) => Opacity(
+                                    opacity: value,
+                                    child: Transform.translate(
+                                      offset: Offset(0, 14 * (1 - value)),
+                                      child: child,
+                                    ),
+                                  ),
+                              child: TaskCard(
+                                task: task,
+                                onToggle: (value) => _toggle(task, value),
+                                onEdit:
+                                    () =>
+                                        _open(EditTaskScreen(taskId: task.id!)),
+                                onDelete: () => _delete(task),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
             ),
           ],
         ),
